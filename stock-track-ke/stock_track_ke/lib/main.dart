@@ -1,6 +1,18 @@
+//page imports
+import 'LoginPage.dart';
+import 'SignupPage.dart';
+
+//end page imports
+
 import 'package:flutter/material.dart';
 
-void main() {
+//firebase import
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(const MyApp());
 }
 
