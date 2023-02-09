@@ -1,18 +1,7 @@
-//page imports
-import 'LoginPage.dart';
-import 'SignupPage.dart';
-
-//end page imports
-
 import 'package:flutter/material.dart';
+import 'package:stock_track_ke/Login_page/login_page.dart';
 
-//firebase import
-import 'package:firebase_core/firebase_core.dart';
-import 'firebase_options.dart';
-
-void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
+void main() {
   runApp(const MyApp());
 }
 
@@ -36,7 +25,7 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.blue,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: LoginPage(),
     );
   }
 }
@@ -107,6 +96,29 @@ class _MyHomePageState extends State<MyHomePage> {
           // horizontal).
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
+            Container(
+              width: 400,
+              margin: EdgeInsets.only(top: 20),
+              child: TextField(
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(),
+                  labelText: 'Enter your email here'
+                ),
+              ),
+            ),
+
+            Container(
+              width: 400,
+              margin: EdgeInsets.only(top: 20),
+              child: TextField(
+                obscureText: true,
+                obscuringCharacter: '*',
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(),
+                  labelText: 'Enter your password'
+                ),
+              ),
+            ),
             const Text(
               'You have pushed the button this many times:',
             ),
