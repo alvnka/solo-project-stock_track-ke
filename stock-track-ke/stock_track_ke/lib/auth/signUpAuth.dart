@@ -30,6 +30,62 @@ class signUpAuth {
   }
 
   static Future<UserCredential> signUpWithGoogle(context) async {
+  if (kIsWeb) {
+      // Create a new provider
+      GoogleAuthProvider googleProvider = GoogleAuthProvider();
+
+      googleProvider
+          .addScope('https://www.googleapis.com/auth/contacts.readonly');
+      googleProvider.setCustomParameters({'login_hint': 'user@example.com'});
+
+      try {
+        // Once signed in, return the UserCredential
+        var userCredential =
+            await FirebaseAuth.instance.signInWithPopup(googleProvider);
+        // Open HomePage
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (context) => MyHomePage()),
+        );
+        return userCredential;
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text('Failed to sign in with Google: ${e.toString()}'),
+        ));
+        rethrow;
+      }
+    } else {
+      // Trigger the authentication flow
+      final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+
+      // Obtain the auth details from the request
+      final GoogleSignInAuthentication? googleAuth =
+          await googleUser?.authentication;
+
+      // Create a new credential
+      final credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth?.accessToken,
+        idToken: googleAuth?.idToken,
+      );
+
+      try {
+        // Once signed in, return the UserCredential
+        var userCredential =
+            await FirebaseAuth.instance.signInWithCredential(credential);
+        // Open HomePage
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (context) => MyHomePage()),
+        );
+        return userCredential;
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text('Failed to sign in with Google: ${e.toString()}'),
+        ));
+        rethrow;
+      }
+    }
+  }
+}
+    /*
     if (kIsWeb) {
       // Create a new provider
       GoogleAuthProvider googleProvider = GoogleAuthProvider();
@@ -67,7 +123,7 @@ class signUpAuth {
       return await FirebaseAuth.instance.signInWithCredential(credential);
     }
   }
-}
+} */
 /* class Auth {
 Future<void> SignUpAuth(String emailAddress, String password) async {
   try {

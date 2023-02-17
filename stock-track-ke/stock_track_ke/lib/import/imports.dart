@@ -1,5 +1,8 @@
 //dart related imports
-export 'dart:js';
+// Import dart:js only when the platform is web
+// or else use an empty mock class
+export 'package:flutter/foundation.dart'
+    if (kIsWeb) 'dart:js' show context, JsObject;
 //export 'dart:io';
 //flutter related imports
 export 'package:flutter/material.dart';
