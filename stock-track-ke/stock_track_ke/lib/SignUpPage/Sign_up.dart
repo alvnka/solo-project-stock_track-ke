@@ -68,7 +68,7 @@ class signUpScreen extends StatelessWidget {
               setState(() {
                 _isSigningIn = false;
               }); */
-                Placeholder();
+                signUpAuth.signUpWithGoogle(context);
               },
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),

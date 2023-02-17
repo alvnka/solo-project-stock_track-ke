@@ -4,6 +4,7 @@ export 'dart:js';
 //flutter related imports
 export 'package:flutter/material.dart';
 export 'package:fluttertoast/fluttertoast.dart';
+export 'package:flutter/foundation.dart';
 
 
 //pages imports
@@ -19,3 +20,6 @@ export 'package:firebase_auth/firebase_auth.dart';
 export 'package:firebase_core/firebase_core.dart';
 export 'package:stock_track_ke/firebase_options.dart';
 //export 'package:flutterfire_ui/auth.dart';
+
+//importing google sign in
+export 'package:google_sign_in/google_sign_in.dart';

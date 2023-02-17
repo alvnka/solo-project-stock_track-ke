@@ -4,14 +4,16 @@ class signUpAuth {
   static Future<void> createUserWithEmailAndPassword(
       String email, String password, BuildContext context) async {
     try {
-      final credential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
+      final credential =
+          await FirebaseAuth.instance.createUserWithEmailAndPassword(
         email: email,
         password: password,
       );
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text('Account created successfully!'),
       ));
-      Navigator.of(context).push(MaterialPageRoute(builder: (context) => MyHomePage()));
+      Navigator.of(context)
+          .push(MaterialPageRoute(builder: (context) => MyHomePage()));
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -24,6 +26,45 @@ class signUpAuth {
       }
     } catch (e) {
       print(e);
+    }
+  }
+
+  static Future<UserCredential> signUpWithGoogle(context) async {
+    if (kIsWeb) {
+      // Create a new provider
+      GoogleAuthProvider googleProvider = GoogleAuthProvider();
+
+      googleProvider
+          .addScope('https://www.googleapis.com/auth/contacts.readonly');
+      googleProvider.setCustomParameters({'login_hint': 'user@example.com'});
+      //open HomePage
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (context) => MyHomePage()),
+      );
+      // Once signed in, return the UserCredential
+      return await FirebaseAuth.instance.signInWithPopup(googleProvider);
+
+      // Or use signInWithRedirect
+      // return await FirebaseAuth.instance.signInWithRedirect(googleProvider);
+    } else {
+      // Trigger the authentication flow
+      final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+
+      // Obtain the auth details from the request
+      final GoogleSignInAuthentication? googleAuth =
+          await googleUser?.authentication;
+
+      // Create a new credential
+      final credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth?.accessToken,
+        idToken: googleAuth?.idToken,
+      );
+      //open HomePage
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (context) => MyHomePage()),
+      );
+      // Once signed in, return the UserCredential
+      return await FirebaseAuth.instance.signInWithCredential(credential);
     }
   }
 }

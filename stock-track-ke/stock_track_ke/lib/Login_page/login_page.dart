@@ -57,8 +57,8 @@ class loginPage extends StatelessWidget {
                 ),
               ),
               onPressed: () async {
-                /* 
-              setState(() {
+
+/*               setState(() {
                 _isSigningIn = true;
               });
 
@@ -67,7 +67,7 @@ class loginPage extends StatelessWidget {
               setState(() {
                 _isSigningIn = false;
               }); */
-                Placeholder();
+                loginAuth.logInWithGoogle(context);
               },
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
