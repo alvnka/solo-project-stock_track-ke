@@ -26,7 +26,7 @@ linter:
     # prefer_single_quotes: true  # Uncomment to enable the `prefer_single_quotes` rule
     prefer_const_constructors: false
     prefer_final_fields: false
-    use_key_in_widget-constructors: false
+    # use_key_in_widget-constructors: false
     prefer_const_literals_to_create_immutables: false
     prefer_const_constructors_in_immutables: false
     avoid_print: false
