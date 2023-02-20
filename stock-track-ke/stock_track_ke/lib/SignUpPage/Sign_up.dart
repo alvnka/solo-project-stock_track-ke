@@ -1,8 +1,17 @@
 import 'package:stock_track_ke/import/imports.dart';
 
-class signUpScreen extends StatelessWidget {
+class signUpScreen extends StatefulWidget {
+  @override
+  State<signUpScreen> createState() => _signUpScreenState();
+}
+
+class _signUpScreenState extends State<signUpScreen> {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  TextEditingController confirmPasswordController = TextEditingController();
+
+  bool _obscurePasswordText = true;
+  bool _obscureConfirmPasswordText = true;
 
   @override
   Widget build(BuildContext context) {
@@ -29,11 +38,41 @@ class signUpScreen extends StatelessWidget {
               margin: EdgeInsets.only(top: 20),
               child: TextField(
                 controller: passwordController,
-                obscureText: true,
+                obscureText: _obscurePasswordText,
                 obscuringCharacter: '*',
                 decoration: InputDecoration(
-                    border: OutlineInputBorder(),
-                    labelText: 'Enter your password'),
+                  border: OutlineInputBorder(),
+                  labelText: 'Input your password',
+                  suffixIcon: IconButton(
+                    icon: Icon(_obscurePasswordText ? Icons.visibility : Icons.visibility_off),
+                    onPressed: () {
+                      setState(() {
+                        _obscurePasswordText = !_obscurePasswordText;
+                      });
+                    },
+                  ),
+                ),
+              ),
+            ),
+            Container(
+              width: 400,
+              margin: EdgeInsets.only(top: 20),
+              child: TextField(
+                controller: confirmPasswordController,
+                obscureText: _obscurePasswordText,
+                obscuringCharacter: '*',
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(),
+                  labelText: 'Confirm your password',
+                  suffixIcon: IconButton(
+                    icon: Icon(_obscurePasswordText ? Icons.visibility : Icons.visibility_off),
+                    onPressed: () {
+                      setState(() {
+                        _obscureConfirmPasswordText = !_obscureConfirmPasswordText;
+                      });
+                    },
+                  ),
+                ),
               ),
             ),
             Container(
@@ -41,7 +80,7 @@ class signUpScreen extends StatelessWidget {
               child: ElevatedButton(
                 onPressed: () {
                   signUpAuth.createUserWithEmailAndPassword(
-                      emailController.text, passwordController.text, context);
+                      emailController.text, passwordController.text, confirmPasswordController.text, context);
                   print("pressed");
                 },
                 child: Text("Sign Up"),

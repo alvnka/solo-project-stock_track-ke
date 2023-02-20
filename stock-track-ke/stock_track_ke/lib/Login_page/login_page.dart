@@ -1,8 +1,14 @@
 import 'package:stock_track_ke/import/imports.dart';
 
-class loginPage extends StatelessWidget {
+class loginPage extends StatefulWidget {
+  @override
+  State<loginPage> createState() => _loginPageState();
+}
+
+class _loginPageState extends State<loginPage> {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  bool _obscureText = true;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -28,11 +34,20 @@ class loginPage extends StatelessWidget {
               margin: EdgeInsets.only(top: 20),
               child: TextField(
                 controller: passwordController,
-                obscureText: true,
+                obscureText: _obscureText,
                 obscuringCharacter: '*',
                 decoration: InputDecoration(
-                    border: OutlineInputBorder(),
-                    labelText: 'Enter your password'),
+                  border: OutlineInputBorder(),
+                  labelText: 'Confirm your password',
+                  suffixIcon: IconButton(
+                    icon: Icon(_obscureText ? Icons.visibility : Icons.visibility_off),
+                    onPressed: () {
+                      setState(() {
+                        _obscureText = !_obscureText;
+                      });
+                    },
+                  ),
+                ),
               ),
             ),
             Container(
