@@ -81,6 +81,7 @@ class loginAuth {
         );
         return userCredential;
       } catch (e) {
+        print(e.toString());
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Text('Failed to sign in with Google: ${e.toString()}'),
         ));
