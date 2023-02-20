@@ -19,7 +19,7 @@ class loginAuth {
         print('No user found for that email.');
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('User not found, please try another email'),
+            content: Text('User not found, please login with valid email or login with google'),
           ),
         );
       } else if (e.code == 'wrong-password') {
