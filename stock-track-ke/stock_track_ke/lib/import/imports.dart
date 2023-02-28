@@ -17,6 +17,7 @@ export 'package:stock_track_ke/SignUpPage/Sign_up.dart';
 export 'package:stock_track_ke/main.dart';
 export 'package:stock_track_ke/auth/signUpAuth.dart';
 export 'package:stock_track_ke/auth/loginAuth.dart';
+export 'package:stock_track_ke/Drawer/drawer.dart';
 
 //firebase imports
 export 'package:firebase_auth/firebase_auth.dart';
