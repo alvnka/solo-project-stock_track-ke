@@ -1,5 +1,8 @@
 from bs4 import BeautifulSoup
 from selenium import webdriver
+import datetime
+from NSE_companies import companiesCloner, scrapeCompanies
+
 
 class NSEcloner:
     """TODO: to run this class
@@ -7,6 +10,7 @@ class NSEcloner:
 scraper.scrape_nse_website('https://www.nse.co.ke/', 'Nairobi Securities Exchange PLC.html')
 del scraper - this deletes the object and closes the chrome browser.
 """
+
     def __init__(self):
         # to set up the Chrome browser
         options = webdriver.ChromeOptions()
@@ -29,6 +33,8 @@ del scraper - this deletes the object and closes the chrome browser.
     def __del__(self):
         # close the browser
         self.driver.quit()
+
+
 class NSEDataScraper:
     def __init__(self, html_path):
         self.html_path = html_path
@@ -37,14 +43,19 @@ class NSEDataScraper:
         data = scraper.get_data()
         print(data)
         """
+
     def get_data(self):
         with open(self.html_path, 'r') as f:
             html = f.read()
         soup = BeautifulSoup(html, 'html.parser')
         marquee = soup.find('div', {'id': 'thrnseappend'})
-        short_items = marquee.find_all('span', {'class': 'shortitems notranslate'})
+        short_items = marquee.find_all(
+            'span', {'class': 'shortitems notranslate'})
         nseclosing = marquee.select('[class^="nseclosing"]')
         nsechange = marquee.select('[class^="nsechange"]')
+        # time stamping
+        now = datetime.datetime.now()
+        timestamp = now.strftime("%Y-%m-%d %H:%M:%S")
 
         if len(short_items) == len(nseclosing) == len(nsechange):
             data = []
@@ -52,87 +63,157 @@ class NSEDataScraper:
                 item = {
                     'short_item': short_items[i].text,
                     'nseclosing': nseclosing[i].text,
-                    'nsechange': nsechange[i].text
+                    'nsechange': nsechange[i].text,
+                    'time_stamp': timestamp
                 }
                 data.append(item)
             return data
         else:
             print("Error: length of lists is not the same")
 
-#clone = NSEcloner()
-#clone.scrape_nse_website('https://www.nse.co.ke', 'Nairobi Securities Exchange PLC.html')
+class NSECompanyInfo:
+    def __init__(self):
+        pass
+
+    def get_company_info(self):
+        # call to NSE cloner
+        clone = NSEcloner()
+        clone.scrape_nse_website('https://www.nse.co.ke', 'Nairobi Securities Exchange PLC.html')
+
+        # call to NSE scraper
+        scraper = NSEDataScraper('./Nairobi Securities Exchange PLC.html')
+        companies_shorts = scraper.get_data()
+
+        # call to companies cloner
+        companiesClone = companiesCloner()
+        companiesClone.scrapeCompanies('https://www.nse.co.ke/listed-companies/#', 'companies.html')
+
+        # call to company scraper
+        scraper = scrapeCompanies('./companies.html')
+        companies = scraper.get_data()
+
+        full_info = []
+
+        for shorts_dict in companies_shorts:
+            found_company = False
+
+            for company_dict in companies:
+                if shorts_dict['short_item'] == company_dict['trading_symbol']:
+                    full_item = {
+                        'company_name': company_dict['company_name'],
+                        'trading_symbol': shorts_dict['short_item'],
+                        'nseclosing': shorts_dict['nseclosing'],
+                        'nsechange': shorts_dict['nsechange'],
+                        'time_stamp': shorts_dict['time_stamp']
+                    }
+                    full_info.append(full_item)
+                    found_company = True
+                    break
+
+            if not found_company:
+                full_item = {
+                    'company_name': '',
+                    'trading_symbol': shorts_dict['short_item'],
+                    'nseclosing': shorts_dict['nseclosing'],
+                    'nsechange': shorts_dict['nsechange'],
+                    'time_stamp': shorts_dict['time_stamp']
+                }
+                full_info.append(full_item)
+
+        return full_info
+
+
+""" # call to NSE cloner
+clone = NSEcloner()
+clone.scrape_nse_website('https://www.nse.co.ke', 'Nairobi Securities Exchange PLC.html')
+# call to NSE scraper
 scraper = NSEDataScraper('./Nairobi Securities Exchange PLC.html')
-data = scraper.get_data()
+companies_shorts = scraper.get_data()
 No_of_companies = 1
-for item in data:
-    print(f'{No_of_companies}\n'
-          f'short_item: {item["short_item"]}\n'
-          f'nseclosing: {item["nseclosing"]}\n'
-          f'nsechange: {item["nsechange"]}\n')
-    No_of_companies+=1
+print(f'************company and stock details***************************')
+for item in companies_shorts:
+    print(
+        f'{No_of_companies}\n'
+        f'short_item: {item["short_item"]}\n'
+        f'nseclosing: {item["nseclosing"]}\n'
+        f'nsechange: {item["nsechange"]}\n'
+        f'time_stamp: {item["time_stamp"]}\n'
+    )
+    No_of_companies += 1
+print(f'*********************************end****************************')
 del scraper
 
+# call to companies cloner
+companiesClone = companiesCloner()
+companiesClone.scrapeCompanies(
+    'https://www.nse.co.ke/listed-companies/#', 'companies.html')
 
-""" import requests
-from bs4 import BeautifulSoup
+# call to company scraper
+scraper = scrapeCompanies('./companies.html')
+companies = scraper.get_data()
+companyNumbers = 1
+print(f'***************************company name and symbols************************')
+for item in companies:
+    print(
+        f'{companyNumbers}\n'
+        f'company name: {item["company_name"]}\n'
+        f'trading_symbol: {item["trading_symbol"]}\n'
+    )
+    companyNumbers += 1
+print(f'**************************end**********************************************')
 
-url = './Nairobi Securities Exchange PLC.html'
-response = requests.get('./Nairobi Securities Exchange PLC.html', verify= False)
-soup = BeautifulSoup(response.text, 'html.parser')
-marquee = soup.find('div', {'id': 'thrnseappend'})
-short_items = marquee.find_all('span', {'class': 'shortitems notranslate'})
-nseclosing = marquee.find_all('span', {'class': 'nseclosing nsenegative notranslate'})
-nsechange = marquee.find_all('span', {'class': 'nsechange nsenegative notranslate'})
+full_info = []
 
-for i in range(len(short_items)):
-    print(short_items[i].text, nseclosing[i].text, nsechange[i].text) """
+for shorts_dict in companies_shorts:
+    found_company = False
 
-""" this is the NSE data scrapper code that works
+    for company_dict in companies:
+        if shorts_dict['short_item'] == company_dict['trading_symbol']:
+            full_item = {
+                'company_name': company_dict['company_name'],
+                'trading_symbol': shorts_dict['short_item'],
+                'nseclosing': shorts_dict['nseclosing'],
+                'nsechange': shorts_dict['nsechange'],
+                'time_stamp': shorts_dict['time_stamp']
+            }
+            full_info.append(full_item)
+            found_company = True
+            break
 
-TODO: put this code as a method in a class
+    if not found_company:
+        full_item = {
+            'company_name': '',
+            'trading_symbol': shorts_dict['short_item'],
+            'nseclosing': shorts_dict['nseclosing'],
+            'nsechange': shorts_dict['nsechange'],
+            'time_stamp': shorts_dict['time_stamp']
+        }
+        full_info.append(full_item)
 
-from bs4 import BeautifulSoup
+print(f'***************************combined list************************')
+companyNumber = 1
+for item in full_info:
+    print(
+        f'{companyNumber}\n'
+        f'company name: {item["company_name"]}\n'
+        f'trading_symbol: {item["trading_symbol"]}\n'
+        f'nseclosing: {item["nseclosing"]}\n'
+        f'nsechange: {item["nsechange"]}\n'
+        f'time_stamp:{item["time_stamp"]}\n'
+    )
+    companyNumber += 1
+print(f'**************************end**********************************************')
+ """
+""" full_info = []
+for shorts_dict in companies_shorts:
+    for company_dict in companies:
+        if shorts_dict['short_item'] == company_dict['trading_symbol']:
+            full_item = {
+                'company_name': company_dict['company_name'],
+                'trading_symbol': shorts_dict['short_item'],
+                'nseclosing': shorts_dict['nseclosing'],
+                'nsechange': shorts_dict['nsechange'],
+                'time_stamp': shorts_dict['time_stamp']
+            }
 
-# read the HTML file
-with open('./Nairobi Securities Exchange PLC.html', 'r') as f:
-    html = f.read()
-
-# create a BeautifulSoup object
-soup = BeautifulSoup(html, 'html.parser')
-
-marquee = soup.find('div', {'id': 'thrnseappend'})
-short_items = marquee.find_all('span', {'class': 'shortitems notranslate'})
-#nseclosing = marquee.find_all('span', {'class': 'nseclosing nsenegative notranslate'})
-nseclosing = marquee.select('[class^="nseclosing"]')
-#nsechange = marquee.find_all('span', {'class': 'nsechange nsenegative notranslate'})
-nsechange = marquee.select('[class^="nsechange"]')
-
-if len(short_items) == len(nseclosing) == len(nsechange):
-    for i in range(len(short_items)):
-        print(f"{i} {short_items[i].text}, {nseclosing[i].text}, {nsechange[i].text}")
-else:
-    print("Error: length of lists is not the same") """
-
-
-""" from selenium import webdriver
-
-# set up the Chrome browser
-options = webdriver.ChromeOptions()
-options.add_argument('--headless')  # run Chrome in headless mode
-options.add_argument('--disable-gpu')
-options.add_argument('--no-sandbox')
-options.add_argument('--disable-dev-shm-usage')
-
-# create a new instance of the Chrome driver
-driver = webdriver.Chrome(options=options)
-
-# navigate to the webpage you want to download
-url = 'https://www.nse.co.ke/'
-driver.get(url)
-
-# get the page source and save it to a file
-with open('Nairobi Securities Exchange PLC.html', 'w') as f:
-    f.write(driver.page_source)
-
-# close the browser
-driver.quit() """
+            full_info.append(full_item)"""

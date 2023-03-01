@@ -1,7 +1,6 @@
 from bs4 import BeautifulSoup
 from selenium import webdriver
 import re
-
 class companiesCloner:
     def __init__(self):
         options = webdriver.ChromeOptions()
@@ -38,7 +37,6 @@ class scrapeCompanies:
 
         # Find all the company sections in the HTML
         company_sections = soup.find_all('div', {'class': 'vc_col-sm-3'})
-
         # Loop over each company section and extract the name and trading symbol
         companySymbols = []
         for section in company_sections:
@@ -49,25 +47,26 @@ class scrapeCompanies:
                 company_name = company_name_tag.text.split('Ord')[0].strip()
 
                 # Extract the trading symbol from the following strong tag
-                trading_symbol_tag = section.find('strong', text=re.compile('Trading Symbol'))
+                trading_symbol_tag = section.find(text=re.compile('Trading Symbol'))
                 if trading_symbol_tag:
                     trading_symbol = trading_symbol_tag.text.split(':')[1].strip()
 
                     # Add the company name and trading symbol to a dictionary
                     company = {
                         'company_name': company_name,
-                        'trading_symbol': trading_symbol
+                        'trading_symbol': trading_symbol,
                     }
 
                     # Add the dictionary to the list of company symbols
                     companySymbols.append(company)
+                    #print(len(companySymbols))
 
         return companySymbols
 
-scraper = scrapeCompanies('companies.html')
+scraper = scrapeCompanies('./companies.html')
 companies = scraper.get_data()
 
-companyNumbers = 1
+""" companyNumbers = 1
 for item in companies:
     print(
         f'{companyNumbers}\n'
@@ -75,3 +74,4 @@ for item in companies:
         f'trading_symbol: {item["trading_symbol"]}\n'
     )
     companyNumbers+=1
+ """
