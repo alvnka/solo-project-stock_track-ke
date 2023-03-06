@@ -62,3 +62,28 @@ for company_number, item in enumerate(company_info, start=1):
         f'nsechange: {item["nsechange"]}\n'
         f'time_stamp: {item["time_stamp"]}\n'
     )
+# push to database
+
+#from Company_combine import *
+import firebase_admin
+from firebase_admin import credentials
+from firebase_admin import db
+import time
+
+# Fetch the service account key JSON file contents
+cred = credentials.Certificate('auth/stock-track-ke-firebase-adminsdk-2jkhe-45a8dc21a6.json')
+
+# Initialize the app with a service account, granting admin privileges
+firebase_admin.initialize_app(cred, {
+    'databaseURL': 'https://stock-track-ke-default-rtdb.firebaseio.com'
+})
+
+# Get a database reference to a new node called "company_info"
+ref = db.reference('company_info')
+
+# Create a list of data to push to the database
+
+
+# Push the list to the "company_info" node in the database
+for company in company_info:
+    ref.push(company)
