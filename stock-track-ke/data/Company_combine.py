@@ -66,7 +66,7 @@ for company_name, details in company_info.items():
     print("Time Stamp:", details['time_stamp'])
     print()
     company_number+=1
-# push to database
+""" # push to realtime database
 
 #from Company_combine import *
 import firebase_admin
@@ -88,7 +88,7 @@ ref = db.reference('company_info')
 # Create a list of data to push to the database
 
 
-# Push the list to the "company_info" node in the database
+# Push the list to the "company_info" node in the realtime database
 for company_name, item in company_info.items():
     company_ref = ref.child(company_name)
     company_ref.update({
@@ -96,4 +96,30 @@ for company_name, item in company_info.items():
         'nsechange': item['nsechange'],
         'time_stamp': item['time_stamp'],
         'image_url': item['image_url']
-    })
+    }) """
+
+import firebase_admin
+from firebase_admin import credentials
+from firebase_admin import firestore
+
+# Initialize Firebase app
+cred = credentials.Certificate('auth/stock-track-ke-firebase-adminsdk-2jkhe-45a8dc21a6.json')
+firebase_admin.initialize_app(cred)
+db = firestore.client()
+
+# Define the collection and document
+doc_ref = db.collection('company_info').document('company_info')
+
+# Create a dictionary with the company info
+data = {}
+for company_name, details in company_info.items():
+    data[company_name] = {
+        'trading_symbol': details['trading_symbol'],
+        'nseclosing': details['nseclosing'],
+        'nsechange': details['nsechange'],
+        'image_url': details['image_url'],
+        'time_stamp': details['time_stamp']
+    }
+
+# Update the document with the company info
+doc_ref.set(data)
