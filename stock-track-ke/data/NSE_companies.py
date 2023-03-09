@@ -44,8 +44,11 @@ class scrapeCompanies:
             company_name_tag = section.find('h6', {'style': 'color: #ffffff;'})
             if company_name_tag:
                 # Extract the company name from the h6 tag
-                company_name = company_name_tag.text.split('Ord')[0].strip()
-
+                company_name = company_name_tag.text.lower().split('ord')[0].strip().title()
+                if '.' in company_name:
+                    company_name = company_name.replace('.', '')
+                if '0Rd'[0] in company_name:
+                    company_name = company_name.replace('0Rd', '')
                 # Extract the trading symbol from the following strong tag
                 trading_symbol_tag = section.find(text=re.compile('Trading Symbol'))
                 if trading_symbol_tag:
@@ -73,8 +76,8 @@ class scrapeCompanies:
                         print('-----------------------') """
         return companySymbols
 
-scraper = scrapeCompanies('./companies.html')
-companies = scraper.get_data()
+#scraper = scrapeCompanies('./companies.html')
+#companies = scraper.get_data()
 
 """ companyNumbers = 1
 for item in companies:

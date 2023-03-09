@@ -1,26 +1,27 @@
 from NSE_data import *
+import requests
 class NSECompanyInfo:
     def __init__(self):
         pass
 
     def get_company_info(self):
         # call to NSE cloner
-        clone = NSEcloner()
-        clone.scrape_nse_website('https://www.nse.co.ke', 'Nairobi Securities Exchange PLC.html')
+        #clone = NSEcloner()
+        #clone.scrape_nse_website('https://www.nse.co.ke', 'Nairobi Securities Exchange PLC.html')
 
         # call to NSE scraper
         scraper = NSEDataScraper('./Nairobi Securities Exchange PLC.html')
         companies_shorts = scraper.get_data()
 
         # call to companies cloner
-        companiesClone = companiesCloner()
-        companiesClone.scrapeCompanies('https://www.nse.co.ke/listed-companies/#', 'companies.html')
+        #companiesClone = companiesCloner()
+        #companiesClone.scrapeCompanies('https://www.nse.co.ke/listed-companies/#', 'companies.html')
 
         # call to company scraper
         scraper = scrapeCompanies('./companies.html')
         companies = scraper.get_data()
 
-        full_info = []
+        company_info = {}
 
         for shorts_dict in companies_shorts:
             found_company = False
@@ -35,7 +36,7 @@ class NSECompanyInfo:
                         'image_url': company_dict['image_url'],
                         'time_stamp': shorts_dict['time_stamp']
                     }
-                    full_info.append(full_item)
+                    company_info[company_dict['company_name']] = full_item
                     found_company = True
                     break
 
@@ -48,23 +49,23 @@ class NSECompanyInfo:
                     'image_url': company_dict['image_url'],
                     'time_stamp': shorts_dict['time_stamp']
                 }
-                full_info.append(full_item)
+                company_info[shorts_dict['short_item']] = full_item
 
-        return full_info
+        return company_info
 
 nse_company_info = NSECompanyInfo()
 company_info = nse_company_info.get_company_info()
-
-for company_number, item in enumerate(company_info, start=1):
-    print(
-        f'{company_number}\n'
-        f'company name: {item["company_name"]}\n'
-        f'trading_symbol: {item["trading_symbol"]}\n'
-        f'nseclosing: {item["nseclosing"]}\n'
-        f'nsechange: {item["nsechange"]}\n'
-        f'image_url:{item["image_url"]}\n'
-        f'time_stamp: {item["time_stamp"]}\n'
-    )
+company_number = 1
+for company_name, details in company_info.items():
+    print(company_number)
+    print("Company Name:", company_name)
+    print("Trading Symbol:", details['trading_symbol'])
+    print("NSE Closing:", details['nseclosing'])
+    print("NSE Change:", details['nsechange'])
+    print("Image URL:", details['image_url'])
+    print("Time Stamp:", details['time_stamp'])
+    print()
+    company_number+=1
 # push to database
 
 #from Company_combine import *
@@ -82,11 +83,17 @@ firebase_admin.initialize_app(cred, {
 })
 
 # Get a database reference to a new node called "company_info"
-ref = db.reference('Company_info')
+ref = db.reference('company_info')
 
 # Create a list of data to push to the database
 
 
 # Push the list to the "company_info" node in the database
-for company in company_info:
-    ref.push(company)
+for company_name, item in company_info.items():
+    company_ref = ref.child(company_name)
+    company_ref.update({
+        'nseclosing': item['nseclosing'],
+        'nsechange': item['nsechange'],
+        'time_stamp': item['time_stamp'],
+        'image_url': item['image_url']
+    })
