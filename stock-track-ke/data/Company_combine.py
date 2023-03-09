@@ -32,6 +32,7 @@ class NSECompanyInfo:
                         'trading_symbol': shorts_dict['short_item'],
                         'nseclosing': shorts_dict['nseclosing'],
                         'nsechange': shorts_dict['nsechange'],
+                        'image_url': company_dict['image_url'],
                         'time_stamp': shorts_dict['time_stamp']
                     }
                     full_info.append(full_item)
@@ -44,6 +45,7 @@ class NSECompanyInfo:
                     'trading_symbol': shorts_dict['short_item'],
                     'nseclosing': shorts_dict['nseclosing'],
                     'nsechange': shorts_dict['nsechange'],
+                    'image_url': company_dict['image_url'],
                     'time_stamp': shorts_dict['time_stamp']
                 }
                 full_info.append(full_item)
@@ -60,6 +62,7 @@ for company_number, item in enumerate(company_info, start=1):
         f'trading_symbol: {item["trading_symbol"]}\n'
         f'nseclosing: {item["nseclosing"]}\n'
         f'nsechange: {item["nsechange"]}\n'
+        f'image_url:{item["image_url"]}\n'
         f'time_stamp: {item["time_stamp"]}\n'
     )
 # push to database
@@ -79,7 +82,7 @@ firebase_admin.initialize_app(cred, {
 })
 
 # Get a database reference to a new node called "company_info"
-ref = db.reference('company_info')
+ref = db.reference('Company_info')
 
 # Create a list of data to push to the database
 

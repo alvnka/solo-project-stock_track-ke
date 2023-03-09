@@ -37,7 +37,7 @@ class scrapeCompanies:
 
         # Find all the company sections in the HTML
         company_sections = soup.find_all('div', {'class': 'vc_col-sm-3'})
-        # Loop over each company section and extract the name and trading symbol
+        # Loop over each company section and extract the name, trading symbol, and image URL
         companySymbols = []
         for section in company_sections:
             # Find the h6 tag containing the company name
@@ -51,16 +51,26 @@ class scrapeCompanies:
                 if trading_symbol_tag:
                     trading_symbol = trading_symbol_tag.text.split(':')[1].strip()
 
-                    # Add the company name and trading symbol to a dictionary
+                    # Extract the image URL from the img tag
+                    image_tag = section.find('img')
+                    if image_tag:
+                        image_url = image_tag['src']
+
+                    # Add the company name, trading symbol, and image URL to a dictionary
                     company = {
                         'company_name': company_name,
                         'trading_symbol': trading_symbol,
+                        'image_url': image_url
                     }
 
                     # Add the dictionary to the list of company symbols
                     companySymbols.append(company)
-                    #print(len(companySymbols))
-
+                    """ for company in companySymbols:
+                        print('-----------------------')
+                        print(company['company_name'])
+                        print(company['trading_symbol'])
+                        print(company['image_url'])
+                        print('-----------------------') """
         return companySymbols
 
 scraper = scrapeCompanies('./companies.html')
