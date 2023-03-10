@@ -36,7 +36,7 @@ class _MyDrawerState extends State<MyDrawer> {
             title: Text("Trading_symbols"),
             onTap: () {
               Navigator.of(context).push(
-                MaterialPageRoute(builder: ((context) => Placeholder())),
+                MaterialPageRoute(builder: ((context) => TradingSymbolsPage())),
               );
             },
           ),

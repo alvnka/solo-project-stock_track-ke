@@ -114,6 +114,7 @@ doc_ref = db.collection('company_info').document('company_info')
 data = {}
 for company_name, details in company_info.items():
     data[company_name] = {
+        'company_name' : details['company_name'],
         'trading_symbol': details['trading_symbol'],
         'nseclosing': details['nseclosing'],
         'nsechange': details['nsechange'],

@@ -55,7 +55,7 @@ class NSEDataScraper:
         nsechange = marquee.select('[class^="nsechange"]')
         # time stamping
         now = datetime.datetime.now()
-        timestamp = now.strftime("%Y-%m-%d %H:%M:%S")
+        timestamp = now.strftime("%d-%m-%Y at %H:%M:%S")
 
         if len(short_items) == len(nseclosing) == len(nsechange):
             data = []

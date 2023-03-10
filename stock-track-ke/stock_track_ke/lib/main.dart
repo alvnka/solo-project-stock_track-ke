@@ -1,16 +1,15 @@
 import 'package:stock_track_ke/import/imports.dart';
 
-Future<void> main() async {
+Future<void> main(List<String> args) async {
   WidgetsFlutterBinding.ensureInitialized();
   //ideal time to initialize
   await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform
-  );
-  runApp(MyApp());
+      options: DefaultFirebaseOptions.currentPlatform);
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  const MyApp({Key? key}) : super(key: key);
 
   // This widget is the root of your application.
   @override
@@ -29,11 +28,10 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.blue,
       ),
-      home:  loginPage(),
+      home: TradingSymbolsPage(),
     );
   }
 }
-
 
 /* class AuthGate extends StatelessWidget {
   const AuthGate({super.key});
