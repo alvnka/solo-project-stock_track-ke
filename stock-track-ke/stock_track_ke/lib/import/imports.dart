@@ -9,8 +9,6 @@ export 'package:flutter/material.dart';
 export 'package:fluttertoast/fluttertoast.dart';
 export 'package:flutter/foundation.dart';
 //export 'package:webview_flutter/webview_flutter.dart';
-
-
 //pages imports
 export 'package:stock_track_ke/Login_page/login_page.dart';
 export 'package:stock_track_ke/HomePage/home_page.dart';
@@ -20,8 +18,6 @@ export 'package:stock_track_ke/auth/signUpAuth.dart';
 export 'package:stock_track_ke/auth/loginAuth.dart';
 export 'package:stock_track_ke/Drawer/drawer.dart';
 export 'package:stock_track_ke/trading_symbols/trading_symbols.dart';
-export 'package:stock_track_ke/Company_data/company_data.dart';
-
 //firebase imports
 export 'package:firebase_auth/firebase_auth.dart';
 export 'package:firebase_core/firebase_core.dart';
