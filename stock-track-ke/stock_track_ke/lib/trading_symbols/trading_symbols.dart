@@ -144,7 +144,7 @@ class _TradingSymbolsPageState extends State<TradingSymbolsPage> {
               Expanded(
                 child: GridView.count(
                   crossAxisCount:
-                      MediaQuery.of(context).size.width > 700 ? 4 : 2,
+                      MediaQuery.of(context).size.width ~/ 200,
                   children: List.generate(filteredData.length, (index) {
                     final company = filteredData[index];
                     return Container(

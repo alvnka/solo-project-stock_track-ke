@@ -155,12 +155,10 @@ class _MyHomePageState extends State<MyHomePage> {
               Expanded(
                 child: GridView.count(
                   crossAxisCount:
-                      MediaQuery.of(context).size.width > 700 ? 4 : 2,
+                      MediaQuery.of(context).size.width ~/ 200,
                   children: List.generate(filteredData.length, (index) {
                     final company = filteredData[index];
                     return Container(
-                      width: 40,
-                      height: 80,
                       decoration: BoxDecoration(
                         boxShadow: [
                           BoxShadow(
@@ -175,6 +173,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(5),
                         ),
+                        elevation: 0,
                         child: Padding(
                           padding: EdgeInsets.all(10),
                           child: Column(
