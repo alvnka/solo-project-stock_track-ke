@@ -1,6 +1,8 @@
 import 'package:stock_track_ke/import/imports.dart';
 
 class TradingSymbolsPage extends StatefulWidget {
+  const TradingSymbolsPage({super.key});
+
   @override
   State<TradingSymbolsPage> createState() => _TradingSymbolsPageState();
 }
@@ -9,6 +11,7 @@ class _TradingSymbolsPageState extends State<TradingSymbolsPage> {
   final TextEditingController _searchController = TextEditingController();
   bool _sortAscending = true;
   String _sortField = 'company_name';
+  String _searchText = '';
 
   @override
   Widget build(BuildContext context) {
@@ -84,73 +87,40 @@ class _TradingSymbolsPageState extends State<TradingSymbolsPage> {
             }
 
             final data = snapshot.data?.data() as Map<String, dynamic>;
-            final List<Map<String, dynamic>> sortedData = List.castFrom<dynamic,
-                Map<String, dynamic>>(data.values.toList())
-              ..where((element) {
-                final searchTerm = _searchController.text.trim().toLowerCase();
-                final companyName =
-                    element['company_name'].toString().toLowerCase();
-                final tradingSymbol =
-                    element['trading_symbol'].toString().toLowerCase();
-                return companyName.contains(searchTerm) ||
-                    tradingSymbol.contains(searchTerm);
-              })
-              ..toList()
-              ..sort((a, b) {
-                final searchTerm = _searchController.text.trim().toLowerCase();
-                final companyNameA = a['company_name'].toString().toLowerCase();
-                final companyNameB = b['company_name'].toString().toLowerCase();
-                final tradingSymbolA =
-                    a['trading_symbol'].toString().toLowerCase();
-                final tradingSymbolB =
-                    b['trading_symbol'].toString().toLowerCase();
+            final List<Map<String, dynamic>> sortedData =
+                List.castFrom<dynamic, Map<String, dynamic>>(
+                    data.values.toList());
 
-                // Assign a score based on how closely the item matches the search term
-                int scoreA = 0, scoreB = 0;
-                if (companyNameA.contains(searchTerm)) {
-                  scoreA += 2;
-                } else if (companyNameA.startsWith(searchTerm)) {
-                  scoreA += 1;
-                }
-                if (tradingSymbolA.contains(searchTerm)) {
-                  scoreA += 1;
-                }
-                if (companyNameB.contains(searchTerm)) {
-                  scoreB += 2;
-                } else if (companyNameB.startsWith(searchTerm)) {
-                  scoreB += 1;
-                }
-                if (tradingSymbolB.contains(searchTerm)) {
-                  scoreB += 1;
-                }
+            final filteredData = sortedData
+                .where((company) =>
+                    company['company_name'].toLowerCase().contains(_searchText))
+                .toList();
 
-                // Sort the items based on their scores
-                if (scoreA != scoreB) {
-                  return scoreB - scoreA;
-                } else {
-                  if (_sortField == 'company_name') {
-                    return _sortAscending
-                        ? a[_sortField].compareTo(b[_sortField])
-                        : b[_sortField].compareTo(a[_sortField]);
-                  } else if (_sortField == 'nseclosing') {
-                    final double? aVal = double.tryParse(a[_sortField]);
-                    final double? bVal = double.tryParse(b[_sortField]);
-                    if (aVal == null && bVal == null) {
-                      return 0;
-                    } else if (aVal == null) {
-                      return _sortAscending ? 1 : -1;
-                    } else if (bVal == null) {
-                      return _sortAscending ? -1 : 1;
-                    } else {
-                      return _sortAscending
-                          ? aVal.compareTo(bVal)
-                          : bVal.compareTo(aVal);
-                    }
-                  } else {
-                    return 0;
-                  }
-                }
-              });
+            if (filteredData.isEmpty) {
+              return Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: TextField(
+                      controller: _searchController,
+                      decoration: InputDecoration(
+                        hintText: 'Search by company name',
+                        prefixIcon: Icon(Icons.search),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10.0),
+                        ),
+                      ),
+                      onChanged: (value) {
+                        setState(() {
+                          _searchText = value.toLowerCase().trim();
+                        });
+                      },
+                    ),
+                  ),
+                  Center(child: Text('No companies found')),
+                ],
+              );
+            }
 
             return Column(children: [
               Padding(
@@ -165,90 +135,62 @@ class _TradingSymbolsPageState extends State<TradingSymbolsPage> {
                     ),
                   ),
                   onChanged: (value) {
-                    setState(() {});
+                    setState(() {
+                      _searchText = value.toLowerCase().trim();
+                    });
                   },
                 ),
               ),
               Expanded(
-                  child: GridView.count(
-                crossAxisCount: MediaQuery.of(context).size.width > 700 ? 4 : 2,
-                children: List.generate(data.length, (index) {
-                  final company = data.values.elementAt(index);
-                  return Container(
-                    width: 40,
-                    height: 80,
-                    decoration: BoxDecoration(
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.2),
-                          offset: Offset(1, 2),
-                          blurRadius: 3,
-                        ),
-                      ],
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: Card(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(5),
+                child: GridView.count(
+                  crossAxisCount:
+                      MediaQuery.of(context).size.width > 700 ? 4 : 2,
+                  children: List.generate(filteredData.length, (index) {
+                    final company = filteredData[index];
+                    return Container(
+                      width: 40,
+                      height: 80,
+                      decoration: BoxDecoration(
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.2),
+                            offset: Offset(1, 2),
+                            blurRadius: 3,
+                          ),
+                        ],
+                        borderRadius: BorderRadius.circular(10),
                       ),
-                      child: Padding(
-                        padding: EdgeInsets.all(10),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              company['company_name'] ?? '',
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16,
-                              ),
-                            ),
-                            SizedBox(height: 10),
-                            Text(
-                              company['trading_symbol'] ?? '',
-                              style: TextStyle(
-                                fontSize: 14,
-                              ),
-                            ),
-                            SizedBox(height: 20),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      'NSE Closing:',
-                                      style: TextStyle(fontSize: 12),
-                                    ),
-                                    Text(
-                                      '${company['nseclosing'] ?? ''}',
-                                      style: TextStyle(fontSize: 16),
-                                    ),
-                                  ],
+                      child: Card(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(5),
+                        ),
+                        child: Padding(
+                          padding: EdgeInsets.all(10),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                company['company_name'] ?? '',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16,
                                 ),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      'NSE Change:',
-                                      style: TextStyle(fontSize: 12),
-                                    ),
-                                    Text(
-                                      '${company['nsechange'] ?? ''}',
-                                      style: TextStyle(fontSize: 16),
-                                    ),
-                                  ],
+                              ),
+                              SizedBox(height: 10),
+                              Text(
+                                company['trading_symbol'] ?? '',
+                                style: TextStyle(
+                                  fontSize: 14,
                                 ),
-                              ],
-                            ),
-                          ],
+                              ),
+                              SizedBox(height: 20),
+                            ],
+                          ),
                         ),
                       ),
-                    ),
-                  );
-                }),
-              ),
+                    );
+                  }),
+                ),
               )
             ]);
           }),

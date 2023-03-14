@@ -1,6 +1,8 @@
 import 'package:stock_track_ke/import/imports.dart';
 
 class loginPage extends StatefulWidget {
+  const loginPage({super.key});
+
   @override
   State<loginPage> createState() => _loginPageState();
 }
