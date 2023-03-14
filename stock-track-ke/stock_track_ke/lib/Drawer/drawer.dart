@@ -1,3 +1,4 @@
+import 'package:stock_track_ke/Settings/settings_page.dart';
 import 'package:stock_track_ke/import/imports.dart';
 
 class MyDrawer extends StatefulWidget {
@@ -32,7 +33,7 @@ class _MyDrawerState extends State<MyDrawer> {
             },
           ),
           ListTile(
-            leading: Icon(Icons.align_vertical_bottom),
+            leading: Icon(Icons.bar_chart),
             title: Text("Trading_symbols"),
             onTap: () {
               Navigator.of(context).push(
@@ -41,11 +42,20 @@ class _MyDrawerState extends State<MyDrawer> {
             },
           ),
           ListTile(
+            leading: Icon(Icons.track_changes_outlined),
+            title: Text("Active tracks"),
+            onTap: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(builder: ((context) => Placeholder())),
+              );
+            },
+          ),
+          ListTile(
             leading: Icon(Icons.settings),
             title: Text("Settings"),
             onTap: () {
               Navigator.of(context).push(
-                MaterialPageRoute(builder: ((context) => Placeholder())),
+                MaterialPageRoute(builder: ((context) => SettingsPage())),
               );
             },
           ),
