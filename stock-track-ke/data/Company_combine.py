@@ -66,6 +66,66 @@ for company_name, details in company_info.items():
     print("Time Stamp:", details['time_stamp'])
     print()
     company_number+=1
+
+
+import firebase_admin
+from firebase_admin import credentials
+from firebase_admin import firestore
+
+# Initialize Firebase app
+cred = credentials.Certificate('auth/stock-track-ke-firebase-adminsdk-2jkhe-45a8dc21a6.json')
+firebase_admin.initialize_app(cred)
+db = firestore.client()
+
+# Define the collection and document
+doc_ref = db.collection('company_info').document('company_info')
+
+# Create a dictionary with the company info
+data = {}
+for company_name, details in company_info.items():
+    data[company_name] = {
+        'company_name' : details['company_name'],
+        'trading_symbol': details['trading_symbol'],
+        'nseclosing': details['nseclosing'],
+        'nsechange': details['nsechange'],
+        'image_url': details['image_url'],
+        'time_stamp': details['time_stamp']
+    }
+
+# Update the document with the company info
+doc_ref.set(data)
+
+individual_companies_ref = db.collection('Individual_companies')
+
+for company_name, details in company_info.items():
+    # Define the document reference for the individual company
+    company_doc_ref = individual_companies_ref.document(company_name)
+
+    # Retrieve the current data for the individual company (if it exists)
+    company_doc = company_doc_ref.get()
+    if company_doc.exists:
+        company_data = company_doc.to_dict()
+        nseclosing_list = company_data.get('nseclosing', [])
+        time_stamp_list = company_data.get('time_stamp', [])
+    else:
+        nseclosing_list = []
+        time_stamp_list = []
+
+    # Append the new nseclosing and time_stamp values to the lists
+    nseclosing_list.append(details['nseclosing'])
+    time_stamp_list.append(details['time_stamp'])
+
+    # Update the individual company document with the new data
+    company_doc_ref.set({
+        'company_name': company_name,
+        'trading_symbol': details['trading_symbol'],
+        'nseclosing': nseclosing_list,
+        'nsechange': details['nsechange'],
+        'image_url': details['image_url'],
+        'time_stamp': time_stamp_list
+    })
+
+
 """ # push to realtime database
 
 #from Company_combine import *
@@ -97,30 +157,3 @@ for company_name, item in company_info.items():
         'time_stamp': item['time_stamp'],
         'image_url': item['image_url']
     }) """
-
-import firebase_admin
-from firebase_admin import credentials
-from firebase_admin import firestore
-
-# Initialize Firebase app
-cred = credentials.Certificate('auth/stock-track-ke-firebase-adminsdk-2jkhe-45a8dc21a6.json')
-firebase_admin.initialize_app(cred)
-db = firestore.client()
-
-# Define the collection and document
-doc_ref = db.collection('company_info').document('company_info')
-
-# Create a dictionary with the company info
-data = {}
-for company_name, details in company_info.items():
-    data[company_name] = {
-        'company_name' : details['company_name'],
-        'trading_symbol': details['trading_symbol'],
-        'nseclosing': details['nseclosing'],
-        'nsechange': details['nsechange'],
-        'image_url': details['image_url'],
-        'time_stamp': details['time_stamp']
-    }
-
-# Update the document with the company info
-doc_ref.set(data)
