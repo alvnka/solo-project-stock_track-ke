@@ -1,3 +1,4 @@
+import 'package:intl/intl.dart';
 import 'package:stock_track_ke/import/imports.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
 
@@ -17,7 +18,7 @@ class _CompanyDetailsPageState extends State<CompanyDetailsPage> {
   void initState() {
     super.initState();
     data = [];
-    _getData();
+    // _getData();
   }
 
   void _getData() async {
@@ -27,11 +28,12 @@ class _CompanyDetailsPageState extends State<CompanyDetailsPage> {
         .doc(widget.companyName)
         .get();
     if (companyDoc.exists && companyDoc.data() != null) {
+      print(companyDoc.toString());
       var data = companyDoc.data()!;
       if (data is Map<String, dynamic>) {
         List<dynamic> nseclosingList = data['nseclosing'];
         List<dynamic> timestampList = data['time_stamp'];
-        print (nseclosingList);
+        print(nseclosingList);
         print(timestampList);
         Map<DateTime, double> closingPrices = {};
         for (int i = 0; i < nseclosingList.length; i++) {
@@ -65,35 +67,69 @@ class _CompanyDetailsPageState extends State<CompanyDetailsPage> {
       appBar: AppBar(
         title: Text(widget.companyName),
       ),
-      body: Padding(
-        padding: EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            Expanded(
-              child: charts.TimeSeriesChart(
-                [
-                  charts.Series<TimeSeriesSales, DateTime>(
-                    id: 'nseclosing',
-                    colorFn: (_, __) =>
-                        charts.MaterialPalette.blue.shadeDefault,
-                    domainFn: (TimeSeriesSales sales, _) => sales.time,
-                    measureFn: (TimeSeriesSales sales, _) => sales.closingPrice,
-                    data: data,
-                  )
-                ],
-                animate: true,
-                dateTimeFactory: const charts.LocalDateTimeFactory(),
-              ),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                // TODO: set tracking function
-              },
-              child: Text('Set Track'),
-            ),
-          ],
-        ),
-      ),
+      body: StreamBuilder(
+          stream: FirebaseFirestore.instance
+              .collection('Individual_companies')
+              .doc(widget.companyName)
+              .snapshots(),
+          builder: (context, snapshot) {
+            // Draw data
+            if (snapshot.hasData) {
+              var data = snapshot.data!;
+
+              List<dynamic> nseclosingList = data['nseclosing'];
+              List<dynamic> timestampList = data['time_stamp'];
+              print(nseclosingList);
+              print(timestampList);
+
+              Map<DateTime, double> closingPrices = {};
+              for (int i = 0; i < nseclosingList.length; i++) {
+                String timestamp = timestampList[i];
+                var dateTime =  DateFormat("dd-MM-yyyy hh:mm:ss").parse(timestamp.replaceAll("at ", ""));
+                closingPrices[dateTime] = (double.parse(nseclosingList[i]));
+              }
+
+              print(closingPrices);
+
+             // return Text(closingPrices.toString());
+
+              return Padding(
+                padding: EdgeInsets.all(16.0),
+                child: Column(
+                  children: [
+                    Expanded(
+                      child: charts.TimeSeriesChart(
+                        [
+                          charts.Series<TimeSeriesSales, DateTime>(
+                            id: 'nseclosing',
+                            colorFn: (_, __) =>
+                                charts.MaterialPalette.blue.shadeDefault,
+                            domainFn: (TimeSeriesSales sales, _) => sales.time,
+                            measureFn: (TimeSeriesSales sales, _) =>
+                                sales.closingPrice,
+                            data: closingPrices.entries
+                                .map((entry) =>
+                                    TimeSeriesSales(entry.key, entry.value))
+                                .toList(),
+                          )
+                        ],
+                        animate: true,
+                        dateTimeFactory: const charts.LocalDateTimeFactory(),
+                      ),
+                    ),
+                    ElevatedButton(
+                      onPressed: () {
+                        // TODO: set tracking function
+                      },
+                      child: Text('Set Track'),
+                    ),
+                  ],
+                ),
+              );
+            }
+
+            return const LinearProgressIndicator();
+          }),
     );
   }
 }
