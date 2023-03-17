@@ -154,8 +154,7 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
               Expanded(
                 child: GridView.count(
-                  crossAxisCount:
-                      MediaQuery.of(context).size.width ~/ 200,
+                  crossAxisCount: MediaQuery.of(context).size.width ~/ 200,
                   children: List.generate(filteredData.length, (index) {
                     final company = filteredData[index];
                     return Container(
@@ -169,66 +168,74 @@ class _MyHomePageState extends State<MyHomePage> {
                         ],
                         borderRadius: BorderRadius.circular(10),
                       ),
-                      child: Card(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(5),
-                        ),
-                        elevation: 0,
-                        child: Padding(
-                          padding: EdgeInsets.all(10),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                company['company_name'] ?? '',
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 16,
-                                ),
-                              ),
-                              SizedBox(height: 10),
-                              Text(
-                                company['trading_symbol'] ?? '',
-                                style: TextStyle(
-                                  fontSize: 14,
-                                ),
-                              ),
-                              SizedBox(height: 20),
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        'NSE Closing:',
-                                        style: TextStyle(fontSize: 12),
-                                      ),
-                                      Text(
-                                        '${company['nseclosing'] ?? ''}',
-                                        style: TextStyle(fontSize: 16),
-                                      ),
-                                    ],
+                      child: GestureDetector(
+                        onTap: () {
+                          Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => CompanyDetailsPage(
+                                companyName: company['company_name']),
+                          ));
+                        },
+                        child: Card(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                          elevation: 0,
+                          child: Padding(
+                            padding: EdgeInsets.all(10),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  company['company_name'] ?? '',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 16,
                                   ),
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        'NSE Change:',
-                                        style: TextStyle(fontSize: 12),
-                                      ),
-                                      Text(
-                                        '${company['nsechange'] ?? ''}',
-                                        style: TextStyle(fontSize: 16),
-                                      ),
-                                    ],
+                                ),
+                                SizedBox(height: 10),
+                                Text(
+                                  company['trading_symbol'] ?? '',
+                                  style: TextStyle(
+                                    fontSize: 14,
                                   ),
-                                ],
-                              ),
-                            ],
+                                ),
+                                SizedBox(height: 20),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          'NSE Closing:',
+                                          style: TextStyle(fontSize: 12),
+                                        ),
+                                        Text(
+                                          '${company['nseclosing'] ?? ''}',
+                                          style: TextStyle(fontSize: 16),
+                                        ),
+                                      ],
+                                    ),
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          'NSE Change:',
+                                          style: TextStyle(fontSize: 12),
+                                        ),
+                                        Text(
+                                          '${company['nsechange'] ?? ''}',
+                                          style: TextStyle(fontSize: 16),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       ),
