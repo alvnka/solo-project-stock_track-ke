@@ -37,27 +37,7 @@ class _TradingSymbolsPageState extends State<TradingSymbolsPage> {
                           onTap: () {
                             setState(() {
                               _sortField = 'company_name';
-                              _sortAscending = true;
-                            });
-                            Navigator.pop(context);
-                          },
-                        ),
-                        ListTile(
-                          title: Text('NSE Closing (ascending)'),
-                          onTap: () {
-                            setState(() {
-                              _sortField = 'nseclosing';
-                              _sortAscending = true;
-                            });
-                            Navigator.pop(context);
-                          },
-                        ),
-                        ListTile(
-                          title: Text('NSE Closing (descending)'),
-                          onTap: () {
-                            setState(() {
-                              _sortField = 'nseclosing';
-                              _sortAscending = false;
+                              _sortAscending = !_sortAscending;
                             });
                             Navigator.pop(context);
                           },
@@ -87,13 +67,45 @@ class _TradingSymbolsPageState extends State<TradingSymbolsPage> {
             }
 
             final data = snapshot.data?.data() as Map<String, dynamic>;
-            final List<Map<String, dynamic>> sortedData =
+            final List<Map<String, dynamic>> unsortedData =
                 List.castFrom<dynamic, Map<String, dynamic>>(
                     data.values.toList());
 
+            final List<Map<String, dynamic>> sortedData =
+                List.from(unsortedData);
+
+            if (_sortField == 'company_name') {
+              sortedData.sort((a, b) => _sortAscending
+                  ? a[_sortField].compareTo(b[_sortField])
+                  : b[_sortField].compareTo(a[_sortField]));
+            } else if (_sortField == 'nseclosing') {
+              sortedData.sort((a, b) {
+                final aValue = a[_sortField];
+                final bValue = b[_sortField];
+
+                // Compare the length of the values
+                final lengthComparison = aValue.length.compareTo(bValue.length);
+
+                // If the length is the same, compare the values themselves
+                if (lengthComparison == 0) {
+                  return _sortAscending
+                      ? aValue.compareTo(bValue)
+                      : bValue.compareTo(aValue);
+                }
+
+                // Otherwise, return the result of comparing the lengths
+                return _sortAscending ? lengthComparison : -lengthComparison;
+              });
+            }
+
             final filteredData = sortedData
                 .where((company) =>
-                    company['company_name'].toLowerCase().contains(_searchText))
+                    company['company_name']
+                        .toLowerCase()
+                        .contains(_searchText) ||
+                    company['trading_symbol']
+                        .toLowerCase()
+                        .contains(_searchText))
                 .toList();
 
             if (filteredData.isEmpty) {
@@ -117,7 +129,7 @@ class _TradingSymbolsPageState extends State<TradingSymbolsPage> {
                       },
                     ),
                   ),
-                  Center(child: Text('No companies found')),
+                  Center(child: Text('No companies or Symbols found')),
                 ],
               );
             }
@@ -143,8 +155,7 @@ class _TradingSymbolsPageState extends State<TradingSymbolsPage> {
               ),
               Expanded(
                 child: GridView.count(
-                  crossAxisCount:
-                      MediaQuery.of(context).size.width ~/ 200,
+                  crossAxisCount: MediaQuery.of(context).size.width ~/ 200,
                   children: List.generate(filteredData.length, (index) {
                     final company = filteredData[index];
                     return Container(
