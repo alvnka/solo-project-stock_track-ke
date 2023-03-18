@@ -9,6 +9,8 @@ class SettingsPage extends StatefulWidget {
 
 class _SettingsPageState extends State<SettingsPage> {
   bool _isChangingDetails = false;
+  bool _changeUsername = false;
+  bool _changePassword = false;
   final _newPasswordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
 
@@ -49,7 +51,7 @@ class _SettingsPageState extends State<SettingsPage> {
             ElevatedButton(
               onPressed: () {
                 setState(() {
-                  _isChangingDetails = true;
+                  _isChangingDetails = !_isChangingDetails;
                 });
               },
               child: Text('Change Details'),
@@ -58,36 +60,9 @@ class _SettingsPageState extends State<SettingsPage> {
             if (_isChangingDetails)
               Column(
                 children: [
-                  TextField(
-                    controller: _newPasswordController,
-                    obscureText: true,
-                    decoration: InputDecoration(
-                      hintText: 'Type new password',
-                    ),
-                  ),
-                  SizedBox(height: 10),
-                  TextField(
-                    controller: _confirmPasswordController,
-                    obscureText: true,
-                    decoration: InputDecoration(
-                      hintText: 'Confirm new password',
-                    ),
-                  ),
-                  SizedBox(height: 20),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
-                      ElevatedButton(
-                        onPressed: () {
-                          // TODO: Implement change email functionality
-                        },
-                        child: Column(
-                          children: [
-                            Icon(Icons.email_sharp),
-                            Text('Change Email'),
-                          ],
-                        ),
-                      ),
                       ElevatedButton(
                         onPressed: () {
                           // TODO: Implement change username functionality
@@ -99,16 +74,22 @@ class _SettingsPageState extends State<SettingsPage> {
                           ],
                         ),
                       ),
-                      ElevatedButton(
-                        onPressed: () {
-                          // TODO: Implement change password functionality
-                        },
-                        child: Column(
-                          children: [
-                            Icon(Icons.key_sharp),
-                            Text('Change Password'),
-                          ],
-                        ),
+                      Column(
+                        children: [
+                          ElevatedButton(
+                            onPressed: () {
+                              setState(() {
+                                _changePassword = !_changePassword;
+                              });
+                            },
+                            child: Column(
+                              children: [
+                                Icon(Icons.key_sharp),
+                                Text('Change Password'),
+                              ],
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),

@@ -120,6 +120,9 @@ class _CompanyDetailsPageState extends State<CompanyDetailsPage> {
                     ElevatedButton(
                       onPressed: () {
                         // TODO: set tracking function
+                        showDialog(context: context, builder: ((context) {
+                          return TrackPopup(companyName: widget.companyName);
+                        }));
                       },
                       child: Text('Set Track'),
                     ),

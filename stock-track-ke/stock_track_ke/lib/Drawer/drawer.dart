@@ -13,7 +13,7 @@ class _MyDrawerState extends State<MyDrawer> {
       child: ListView(
         children: <Widget>[
           UserAccountsDrawerHeader(
-            accountName: Text("Your Name"),
+            accountName: Text(FirebaseAuth.instance.currentUser!.uid),
             accountEmail: Text("youremail@example.com"),
             currentAccountPicture: CircleAvatar(
               backgroundColor: Colors.white,
@@ -46,7 +46,7 @@ class _MyDrawerState extends State<MyDrawer> {
             title: Text("Active tracks"),
             onTap: () {
               Navigator.of(context).push(
-                MaterialPageRoute(builder: ((context) => Placeholder())),
+                MaterialPageRoute(builder: ((context) => ActiveTracksPage())),
               );
             },
           ),

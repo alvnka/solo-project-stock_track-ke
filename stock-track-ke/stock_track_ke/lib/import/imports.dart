@@ -19,6 +19,8 @@ export 'package:stock_track_ke/auth/loginAuth.dart';
 export 'package:stock_track_ke/Drawer/drawer.dart';
 export 'package:stock_track_ke/trading_symbols/trading_symbols.dart';
 export 'package:stock_track_ke/TrackingPages/CompanyDetails.dart';
+export 'package:stock_track_ke/TrackingPages/TrackPopUp.dart';
+export 'package:stock_track_ke/TrackingPages/active_tracks.dart';
 //firebase imports
 export 'package:firebase_auth/firebase_auth.dart';
 export 'package:firebase_core/firebase_core.dart';
