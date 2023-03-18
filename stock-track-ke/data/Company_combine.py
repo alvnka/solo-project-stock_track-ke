@@ -1,5 +1,6 @@
 from NSE_data import *
 import requests
+import os
 class NSECompanyInfo:
     def __init__(self):
         pass
@@ -73,8 +74,14 @@ from firebase_admin import credentials
 from firebase_admin import firestore
 
 # Initialize Firebase app
-cred = credentials.Certificate('auth/stock-track-ke-firebase-adminsdk-2jkhe-45a8dc21a6.json')
+cred = credentials.Certificate('./auth/stock-track-ke-firebase-adminsdk-2jkhe-45a8dc21a6.json')
+""" cwd = os.getcwd()
+# Navigate to file path
+file_path = os.path.join(cwd, 'auth', 'stock-track-ke-firebase-adminsdk-2jkhe-45a8dc21a6.json')
+# Initialize Firebase app with the credential file
+cred = credentials.Certificate(file_path) """
 firebase_admin.initialize_app(cred)
+
 db = firestore.client()
 
 # Define the collection and document
@@ -91,6 +98,10 @@ for company_name, details in company_info.items():
         'image_url': details['image_url'],
         'time_stamp': details['time_stamp']
     }
+
+    # Download the image file
+    image_url = details['image_url']
+    image_filename = f"{company_name}.jpg"
 
 # Update the document with the company info
 doc_ref.set(data)
