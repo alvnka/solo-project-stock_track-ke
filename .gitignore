@@ -3,3 +3,8 @@ stock-track-ke/data/auth/stock-track-ke-firebase-adminsdk-2jkhe-45a8dc21a6.json
 stock-track-ke/.vscode/launch.json
 stock-track-ke/.vscode/settings.json
 stock-track-ke/stock_track_ke/.vscode/extensions.json
+stock-track-ke/stock_track_ke/lib/TrackingPages/active_tracks.dart
+stock-track-ke/data/__pycache__/NSE_companies.cpython-310.pyc
+
+stock-track-ke/data/__pycache__/NSE_data.cpython-310.pyc
+stock-track-ke/stock_track_ke/pubspec.lock

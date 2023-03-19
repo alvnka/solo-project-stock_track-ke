@@ -30,7 +30,8 @@ class _signUpScreenState extends State<signUpScreen> {
                 controller: emailController,
                 decoration: InputDecoration(
                     border: OutlineInputBorder(),
-                    labelText: 'Enter your email here'),
+                    labelText: 'Enter your email here',
+                    suffixIcon: Icon(Icons.email)),
               ),
             ),
             Container(
@@ -59,13 +60,13 @@ class _signUpScreenState extends State<signUpScreen> {
               margin: EdgeInsets.only(top: 20),
               child: TextField(
                 controller: confirmPasswordController,
-                obscureText: _obscurePasswordText,
+                obscureText: _obscureConfirmPasswordText,
                 obscuringCharacter: '*',
                 decoration: InputDecoration(
                   border: OutlineInputBorder(),
                   labelText: 'Confirm your password',
                   suffixIcon: IconButton(
-                    icon: Icon(_obscurePasswordText ? Icons.visibility : Icons.visibility_off),
+                    icon: Icon(_obscureConfirmPasswordText ? Icons.visibility : Icons.visibility_off),
                     onPressed: () {
                       setState(() {
                         _obscureConfirmPasswordText = !_obscureConfirmPasswordText;

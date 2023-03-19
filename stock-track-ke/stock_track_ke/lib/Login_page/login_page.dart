@@ -28,7 +28,8 @@ class _loginPageState extends State<loginPage> {
                 controller: emailController,
                 decoration: InputDecoration(
                     border: OutlineInputBorder(),
-                    labelText: 'Enter your email here'),
+                    labelText: 'Enter your email here',
+                    suffixIcon: Icon(Icons.email)),
               ),
             ),
             Container(

@@ -6,6 +6,7 @@ class ActiveTracksPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text("Active Tracks")),
+      drawer: MyDrawer(),
       body: StreamBuilder(
         stream: FirebaseFirestore.instance
             .collection("active_tracks")
@@ -24,7 +25,7 @@ class ActiveTracksPage extends StatelessWidget {
           data.forEach((key, value) {
             if (value != null && key != "name") {
               var timeString = DateTime.fromMillisecondsSinceEpoch(int.parse(key));
-              double price = value;
+              var price = value;
               trackList.add(
                 Dismissible(
                   key: Key(key),

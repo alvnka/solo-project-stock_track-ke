@@ -7,20 +7,50 @@ class MyDrawer extends StatefulWidget {
 }
 
 class _MyDrawerState extends State<MyDrawer> {
+  String _username = '';
+  String _email = '';
+  String? _profilePhotoUrl;
+  bool _isChangingDetails = false;
+  bool _changeUsername = false;
+  bool _changePassword = false;
+  final _newPasswordController = TextEditingController();
+  final _confirmPasswordController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    _getUserData();
+  }
+
+  Future<void> _getUserData() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      final userData = await FirebaseFirestore.instance
+          .collection('Users')
+          .doc(user.uid)
+          .get();
+      setState(() {
+        _username = userData.data()?['name'] ?? '';
+        _email = userData.data()?['email'] ?? '';
+        _profilePhotoUrl = userData.data()?['photoUrl'] ?? '';
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Drawer(
       child: ListView(
         children: <Widget>[
           UserAccountsDrawerHeader(
-            accountName: Text(FirebaseAuth.instance.currentUser!.uid),
-            accountEmail: Text("youremail@example.com"),
+            accountName: Text('$_username'),
+            accountEmail: Text('$_email'),
             currentAccountPicture: CircleAvatar(
-              backgroundColor: Colors.white,
-              child: Text(
-                "Y",
-                style: TextStyle(fontSize: 40.0),
-              ),
+              radius: 50,
+              backgroundImage: _profilePhotoUrl != null
+                  ? NetworkImage(_profilePhotoUrl!)
+                  : null,
+              child: _profilePhotoUrl == null ? Icon(Icons.person) : null,
             ),
           ),
           ListTile(
