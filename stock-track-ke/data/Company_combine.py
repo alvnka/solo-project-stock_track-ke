@@ -7,16 +7,16 @@ class NSECompanyInfo:
 
     def get_company_info(self):
         # call to NSE cloner
-        #clone = NSEcloner()
-        #clone.scrape_nse_website('https://www.nse.co.ke', 'Nairobi Securities Exchange PLC.html')
+        clone = NSEcloner()
+        clone.scrape_nse_website('https://www.nse.co.ke', 'Nairobi Securities Exchange PLC.html')
 
         # call to NSE scraper
         scraper = NSEDataScraper('./Nairobi Securities Exchange PLC.html')
         companies_shorts = scraper.get_data()
 
         # call to companies cloner
-        #companiesClone = companiesCloner()
-        #companiesClone.scrapeCompanies('https://www.nse.co.ke/listed-companies/#', 'companies.html')
+        companiesClone = companiesCloner()
+        companiesClone.scrapeCompanies('https://www.nse.co.ke/listed-companies/#', 'companies.html')
 
         # call to company scraper
         scraper = scrapeCompanies('./companies.html')
