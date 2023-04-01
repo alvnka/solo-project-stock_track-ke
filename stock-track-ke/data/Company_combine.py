@@ -43,7 +43,7 @@ class NSECompanyInfo:
 
             if not found_company:
                 full_item = {
-                    'company_name': '',
+                    'company_name': shorts_dict['short_item'],
                     'trading_symbol': shorts_dict['short_item'],
                     'nseclosing': shorts_dict['nseclosing'],
                     'nsechange': shorts_dict['nsechange'],
