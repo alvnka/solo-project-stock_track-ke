@@ -1,4 +1,4 @@
-# solo-project-stock_track-ke
+# stock_track-ke
 ## My campus personal project
 This is an application that scrapes the NSE to get company data that is the trading symbol, closing and change. I have also created the User interface using Flutter that show cases this data in a more informative and helpful way. 
 
